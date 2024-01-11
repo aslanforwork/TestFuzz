@@ -2,7 +2,10 @@ package org.example;
 
 import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,8 +13,9 @@ import java.util.Optional;
 
 public class FuzzLFI {
 
+    // I've chosen the "root" folder because it always exists and suitable for POC
     static final Path uploadDir = Paths.get("/root");
-    
+
     public static void fuzzerTestOneInput(FuzzedDataProvider data) {
         String jazzerInput = data.consumeString(15);
 
@@ -34,13 +38,6 @@ public class FuzzLFI {
 
         Path resultingPath = Paths.get(uploadDir.toString(), fileName);
 
-        File file = new File(String.valueOf(resultingPath));
-
-        // If file doesn't exist, return nothing
-        if (!file.exists()) {
-            return Optional.empty();
-        }
-
         // Reading the file line by line
         try (BufferedReader br = new BufferedReader(new FileReader(resultingPath.toString()))) {
             StringBuilder sb = new StringBuilder();
@@ -54,6 +51,8 @@ public class FuzzLFI {
 
             // Return the contents of file
             return Optional.of(sb.toString());
+        } catch (FileNotFoundException e) {
+            return Optional.empty();
         }
     }
 }

@@ -5,7 +5,6 @@ import com.code_intelligence.jazzer.api.HookType;
 import com.code_intelligence.jazzer.api.Jazzer;
 import com.code_intelligence.jazzer.api.MethodHook;
 
-import java.io.Reader;
 import java.lang.invoke.MethodHandle;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
